@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import useHistory, {Link} from 'use-history'
-import axios from 'axios';
+import axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
 
 function Connexion() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const history = useHistory();
+    const [msgErreur, setMsgErreur] = useState('');
     const handleLogin = () => {
 
         const userData = {
@@ -16,15 +15,16 @@ function Connexion() {
         axios.post('/api/connexion', userData)
             .then(response => {
                 if (response.data.success) {
-
+                    // changement vers calandrier // trouver un moyen
+                    window.location.href = '/calendrier.js';
+                } else {
+                    setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                 }
             })
-
+            .catch(error => {
+                setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+            });
     };
-
-    const handleClick = () =>{
-        history.push('/calendrier');
-    }
 
     return (
         <div>
@@ -48,7 +48,7 @@ function Connexion() {
                     required
                 />
                 <br/>
-                <button type="submit" onClick={handleClick}>Se connecter</button>
+                <button type="submit">Se connecter</button>
             </form>
         </div>
     );

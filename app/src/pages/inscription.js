@@ -1,9 +1,11 @@
 // Inscription.js
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function Inscription() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [loginError, setMsgErreur] = useState('');
 
     const handleLogin = () => {
 
@@ -17,11 +19,11 @@ function Inscription() {
                 if (response.data.success) {
                     window.location.href = '/accueil.js';
                 } else {
-                    setLoginError("Nom d'utilisateur ou mot de passe incorrect.");
+                    setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                 }
             })
             .catch(error => {
-                setLoginError("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
             });
     };
 
