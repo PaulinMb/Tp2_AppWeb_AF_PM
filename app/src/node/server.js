@@ -243,6 +243,29 @@ app.post("/connection",(req,res)=>{
     });
 });
 
+
+// DeConnexion
+app.get("/deconnexion", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Erreur lors de la déconnexion");
+        }
+        res.redirect("/");
+    });
+});
+
+// calendrier
+app.get("/calendrier", (req, res) => {
+    // controller si l'utilisateur est connecté grace session
+    if (req.session && req.session.user) {
+        // Rendre la page de calendrier avec l'élément "Calendrier"
+        // ...
+    } else {
+        // Rediriger vers la page d'accueil si l'utilisateur n'est pas connecté
+        res.redirect("/");
+    }
+});
+
 //ecoute sur le port 5000
 app.listen(5000 ,()=>{
     console.log("server listening on port 5000")
