@@ -4,6 +4,8 @@ const app = express();
 app.use(bodyParser.json());
 var mysql = require('mysql');
 const e = require('express');
+const bcrypt = require('bcrypt');
+const pathInscritption = require('./pages/html/inscription.html');
 
 //connection
 //pool de connection permet d'avoir plusieurs connections et les réutiliser
@@ -188,4 +190,36 @@ app.listen(5000 ,()=>{
     console.log("server listening on port 5000")
 });
 
+// Accueil
+app.get("/", (req, res) => {
+    const welcomeMessage = "<h1>Bienvenue sur la page d'accueil de votre calendrier.</h1>";
+    res.send(welcomeMessage);
+});
+
+// inscription
+app.get("/inscription", (req, res) => {
+    res.sendFile(pathInscritption.join(__dirname, 'pages', 'inscription.html'));
+});
+
+app.post("/inscription", (req, res) => {
+    const { username, password } = req.body;
+    // hashage du password
+    bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+            console.error("Erreur de hachage de mot de passe");
+            res.redirect("/inscription");
+        } else {
+            // insere l'utilisateur et le mot de passe hashé a la bd
+            const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
+            conn.query(sqlQuery, [username, hash], (err, result) => {
+                if (err) {
+                    console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données");
+                    res.redirect("/inscription");
+                } else {
+                    res.redirect("/");
+                }
+            });
+        }
+    });
+});
 
