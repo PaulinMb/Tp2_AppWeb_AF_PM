@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import useHistory, {Link} from 'use-history'
+import axios from 'axios';
 
 function Connexion() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    const history = useHistory();
     const handleLogin = () => {
-        // Gérer la soumission du formulaire ici
+
+        const userData = {
+            username: username,
+            password: password
+        }
+
+        axios.post('/api/connexion', userData)
+            .then(response => {
+                if (response.data.success) {
+
+                }
+            })
+
     };
+
+    const handleClick = () =>{
+        history.push('/calendrier');
+    }
 
     return (
         <div>
@@ -30,7 +48,7 @@ function Connexion() {
                     required
                 />
                 <br/>
-                <button type="submit">Se connecter</button>
+                <button type="submit" onClick={handleClick}>Se connecter</button>
             </form>
         </div>
     );

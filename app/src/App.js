@@ -4,6 +4,7 @@ import Accueil from './pages/accueil';
 import Connexion from './pages/connexion';
 
 import {BrowserRouter, Routes, Route, NavLink} from "react-router-dom";
+import Calendrier from "./pages/calendrier";
 
 
 function App() {
@@ -46,11 +47,22 @@ function App() {
                             Connexion
                         </NavLink>
                     </div>
+                    <div style={{margin: '15px'}}>
+                        <NavLink to="/calendrier" style={({isActive}) => ({
+                            color: isActive ? '#333' : '#999',
+                            background: isActive ? 'white' : '#333',
+                            padding: "15px",
+                            textDecoration: 'none'
+                        })}>
+                            Calendrier
+                        </NavLink>
+                    </div>
                 </div>
                 <Routes>
                     <Route exact path="/" element={<Accueil/>}/>
                     <Route exact path="/inscription" element={<Inscription/>}/>
                     <Route exact path="/connexion" element={<Connexion/>}/>
+                    <Route exact path="calendrier/" element={<Calendrier/>}/>
                 </Routes>
             </BrowserRouter>
         </div>

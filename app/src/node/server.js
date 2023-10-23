@@ -8,8 +8,9 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 
 const path = require('path');
-const pathInscription = path.join(__dirname, 'pages', 'html', 'inscription.html');
-const pathConnexion = path.join(__dirname, 'pages', 'html', 'connexion.html');
+const pathInscription = path.join(__dirname,'..','pages', '/inscription.js');
+const pathConnexion = path.join(__dirname,'..','pages', 'connexion.js');
+const pathAccueil = path.join(__dirname,'..','App.js');
 
 
 
@@ -172,16 +173,17 @@ app.delete("/deleteEvent",(req,res)=>{
 
 // Accueil
 app.get("/", (req, res) => {
-    const welcomeMessage = "<h1>Bienvenue sur la page d'accueil de votre calendrier.</h1>";
-    res.send(welcomeMessage);
+    const messageBienvenue = "<h1>Bienvenue sur la page d'accueil de votre calendrier.</h1>";
+    res.send(messageBienvenue);
+    res.sendFile(pathAccueil);
 });
 
 // inscription
 app.get("/inscription", (req, res) => {
-    res.sendFile(pathInscritption.join(__dirname, 'pages', 'inscription.html'));
+    res.sendFile(pathInscription);
 });
 
-app.post("/inscription", (req, res) => {
+app.post("/api/inscription", (req, res) => {
     const { username, password } = req.body;
     // hashage du password
     bcrypt.hash(password, 10, (err, hash) => {
@@ -211,11 +213,11 @@ app.get("/connexion", (req, res) => {
     if (req.session && req.session.user) {
         res.redirect("/calendrier");
     } else {
-        res.sendFile(pathConnexion.join(__dirname, 'pages', 'connexion.html'));
+        res.sendFile(pathConnexion);
     }
 });
 //validation de connection utilisateur
-app.post("/connection",(req,res)=>{
+app.post("/api/connection",(req,res)=>{
     const { username, password } = req.body;
 
     // avec requeteSelectUser
@@ -267,6 +269,6 @@ app.get("/calendrier", (req, res) => {
 });
 
 //ecoute sur le port 5000
-app.listen(5000 ,()=>{
+app.listen(3001 ,()=>{
     console.log("server listening on port 5000")
 });

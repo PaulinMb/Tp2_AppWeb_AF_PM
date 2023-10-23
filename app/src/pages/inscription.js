@@ -5,7 +5,25 @@ function Inscription() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    // Gérez la soumission du formulaire ici
+    const handleLogin = () => {
+
+        const userData = {
+            username: username,
+            password: password
+        }
+
+        axios.post('/api/connexion', userData)
+            .then(response => {
+                if (response.data.success) {
+                    window.location.href = '/accueil.js';
+                } else {
+                    setLoginError("Nom d'utilisateur ou mot de passe incorrect.");
+                }
+            })
+            .catch(error => {
+                setLoginError("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+            });
+    };
 
     return (
         <div>
