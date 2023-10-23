@@ -5,7 +5,14 @@ app.use(bodyParser.json());
 var mysql = require('mysql');
 const e = require('express');
 const bcrypt = require('bcrypt');
-const pathInscritption = require('./pages/html/inscription.html');
+const session = require('express-session');
+
+const path = require('path');
+const pathInscription = path.join(__dirname, 'pages', 'html', 'inscription.html');
+const pathConnexion = path.join(__dirname, 'pages', 'html', 'connexion.html');
+
+
+
 
 //connection
 //pool de connection permet d'avoir plusieurs connections et les réutiliser
@@ -102,6 +109,12 @@ function createEvent(type,userid,callback){
 
 //API'S--------------------------------------
 
+// gestion de session
+app.use(session({
+    secret: 'Z5X34PJszv',
+    resave: false,
+    saveUninitialized: true
+}));
 
 app.get("/api",(req,res)=>{
 
@@ -156,39 +169,6 @@ app.delete("/deleteEvent",(req,res)=>{
     }
 })
 
-//validation de connection utilisateur
-app.post("/connection",(req,res)=>{
-    let retMessage = {"EstUser":false};
-
-    if(req.body.username !=null && req.body.password !=null){
-    //callback avec le data et validation
-    requeteSelectUser(req.body.username,req.body.password,(data,err)=>{
-        if(err===null){
-            console.log(data.length)
-            if(data.length>0){
-                console.log("est un user");
-                retMessage.EstUser = true;
-                res.json(retMessage).end();
-            }else {
-                console.log("pas un user");
-                res.json(retMessage).end();
-            }
-        }else{
-            console.log("error");
-            res.json(retMessage).end();
-        }
-    });
-
-    }else{
-        console.log("body null");
-        res.json(retMessage).end();
-    }
-})
-
-//ecoute sur le port 5000
-app.listen(5000 ,()=>{
-    console.log("server listening on port 5000")
-});
 
 // Accueil
 app.get("/", (req, res) => {
@@ -223,3 +203,47 @@ app.post("/inscription", (req, res) => {
     });
 });
 
+
+
+// Connexion
+app.get("/connexion", (req, res) => {
+    // si l'user est deja connecte
+    if (req.session && req.session.user) {
+        res.redirect("/calendrier");
+    } else {
+        res.sendFile(pathConnexion.join(__dirname, 'pages', 'connexion.html'));
+    }
+});
+//validation de connection utilisateur
+app.post("/connection",(req,res)=>{
+    const { username, password } = req.body;
+
+    // avec requeteSelectUser
+    requeteSelectUser(username, password, (data, err) => {
+        if (err) {
+            console.error("Erreur lors de la connexion depuis la base de données");
+            res.redirect("/connexion");
+        } else if (data.length > 0) {
+            // si password est hashé
+            const user = data[0];
+            bcrypt.compare(password, user.user_password, (bcryptErr, bcryptRes) => {
+                if (bcryptErr || !bcryptRes) {
+                    console.error("Mot de passe incorrect");
+                    res.redirect("/connexion");
+                } else {
+                    // Stocke l'utilisateur en session
+                    req.session.user = username;
+                    res.redirect("/calendrier");
+                }
+            });
+        } else {
+            console.error("Utilisateur introuvable");
+            res.redirect("/connexion");
+        }
+    });
+});
+
+//ecoute sur le port 5000
+app.listen(5000 ,()=>{
+    console.log("server listening on port 5000")
+});
