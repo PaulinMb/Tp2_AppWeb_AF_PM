@@ -6,6 +6,7 @@ var mysql = require('mysql');
 const e = require('express');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
+const cors = require("cors");
 
 const path = require('path');
 const pathInscription = path.join(__dirname,'..','pages', '/inscription.js');
@@ -13,6 +14,14 @@ const pathConnexion = path.join(__dirname,'..','pages', 'connexion.js');
 const pathAccueil = path.join(__dirname,'..','App.js');
 
 
+//pour allow la request origin
+app.use(
+  cors({
+    origin: ["http://localhost:3000","http://localhost:3001"],
+    methods: ["GET", "POST","DELETE","PUT"],
+    credentials: true,
+  })
+);
 
 
 //connection
@@ -217,30 +226,35 @@ app.get("/connexion", (req, res) => {
     }
 });
 //validation de connection utilisateur
-app.post("/api/connection",(req,res)=>{
+app.post("/api/connexion",(req,res)=>{
     const { username, password } = req.body;
 
     // avec requeteSelectUser
     requeteSelectUser(username, password, (data, err) => {
         if (err) {
             console.error("Erreur lors de la connexion depuis la base de données");
-            res.redirect("/connexion");
+            res.json({estLoggedIn:false,message:"Erreur lors de la connexion depuis la base de données"}).end();
+            //res.redirect("/connexion");
         } else if (data.length > 0) {
             // si password est hashé
             const user = data[0];
             bcrypt.compare(password, user.user_password, (bcryptErr, bcryptRes) => {
                 if (bcryptErr || !bcryptRes) {
                     console.error("Mot de passe incorrect");
-                    res.redirect("/connexion");
+                    res.json({estLoggedIn:true,message:"Mot de passe incorrect"}).end();
+                    //res.redirect("/connexion");
                 } else {
                     // Stocke l'utilisateur en session
                     req.session.user = username;
-                    res.redirect("/calendrier");
+                    console.error("Connection succes");
+                    //res.redirect("/calendrier");
+                    res.json({estLoggedIn:false,message:"Connection succes"}).end();
                 }
             });
         } else {
             console.error("Utilisateur introuvable");
-            res.redirect("/connexion");
+            ///res.redirect("/connexion");
+            res.json({estLogedIn:false,message:"Utilisateur introuvable"}).end();
         }
     });
 });

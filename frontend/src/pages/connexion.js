@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
+import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
+Axios.defaults.withCredentials = true;
 
-function Connexion() {
+function Connexion(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [msgErreur, setMsgErreur] = useState('');
+
     const handleLogin = () => {
 
         const userData = {
@@ -12,17 +14,21 @@ function Connexion() {
             password: password
         }
 
-        axios.post('/api/connexion', userData)
+        Axios.post('http://localhost:5000/api/connexion', userData)
             .then(response => {
-                if (response.data.success) {
+                if (response.data.estLoggedIn==true) {
                     // changement vers calandrier // trouver un moyen
-                    window.location.href = '/calendrier.js';
+                    //window.location.href = '/calendrier.js';
+                    props.functionRemonteLeState(response.data.estLoggedIn)
+                    console.log("response.data")
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
+                    console.log("Nom d'utilisateur ou mot de passe incorrect.")
                 }
             })
             .catch(error => {
                 setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.")
             });
     };
 
@@ -49,9 +55,12 @@ function Connexion() {
                 />
                 <br/>
                 <button type="submit">Se connecter</button>
+
             </form>
+            <button onClick={handleLogin}>api call</button> 
         </div>
     );
+    //<button onClick={handleLogin}>api call</button> boutton temporaire pour tester éviter refresh react
 }
 
 export default Connexion;

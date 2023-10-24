@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Inscription from './pages/inscription';
 import Accueil from './pages/accueil';
 import Connexion from './pages/connexion';
@@ -7,6 +7,7 @@ import Calendrier from "./pages/calendrier";
 
 
 function App() {
+    let [isConnected,setIsConnected] = useState(false)
     return (
         <div>
             <BrowserRouter>
@@ -46,8 +47,8 @@ function App() {
                             Connexion
                         </NavLink>
                     </div>
-                  
-                    <div style={{margin: '15px'}}>
+                    { isConnected ? 
+                    (<div style={{margin: '15px'}}>
                         <NavLink to="/calendrier" style={({isActive}) => ({
                             color: isActive ? '#333' : '#999',
                             background: isActive ? 'white' : '#333',
@@ -56,13 +57,14 @@ function App() {
                         })}>
                             Calendrier
                         </NavLink>
-                    </div>
+                    </div>) : null
+                    }
                 </div>
                 <Routes>
                     <Route exact path="/" element={<Accueil/>}/>
                     <Route exact path="/inscription" element={<Inscription/>}/>
-                    <Route exact path="/connexion" element={<Connexion/>}/>  
-                    <Route exact path="calendrier/" element={<Calendrier/>}/>
+                    <Route exact path="/connexion" element={<Connexion functionRemonteLeState={setIsConnected}/>}/>  
+                    <Route exact path="calendrier/" element={<Calendrier />}/>
                 </Routes>
             </BrowserRouter>
         </div>
