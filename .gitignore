@@ -155,4 +155,5 @@ dist
 .pnp.*
 
 node_modules
+.idea
 
