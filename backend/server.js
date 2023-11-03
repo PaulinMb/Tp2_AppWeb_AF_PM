@@ -268,7 +268,7 @@ app.get("/connexion", (req, res) => {
 });
 //validation de connection utilisateur
 app.post("/api/connexion",(req,res)=>{
-    console.log(req.session)
+    console.log(req.body)
     const { username, password } = req.body;
     // avec requeteSelectUser
     requeteSelectUser(username,password, (data, err) => {

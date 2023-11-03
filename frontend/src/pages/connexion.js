@@ -38,12 +38,13 @@ function Connexion(props) {
 
         Axios.post('http://localhost:5000/api/connexion', userData)
             .then(response => {
-                if (response.data.estLoggedIn==true) {
+                console.log(response.data)
+                if (response.data) {
                     // changement vers calandrier // trouver un moyen
                     //window.location.href = '/calendrier.js';
                     localStorage.setItem("token",response.data.token)
                     props.functionRemonteLeState(response.data.estLoggedIn)
-                    console.log("response.data")
+                    console.log(response.data)
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                     console.log("Nom d'utilisateur ou mot de passe incorrect.")
@@ -80,10 +81,11 @@ function Connexion(props) {
                 <button type="submit">Se connecter</button>
 
             </form>
-            <button onClick={handleLogin}>api call</button> 
+            <button >api call</button>
+            <button onClick={handleLogin}>api call</button>  
         </div>
     );
-    //<button onClick={handleLogin}>api call</button> boutton temporaire pour tester éviter refresh react
+
 }
 
 export default Connexion;
