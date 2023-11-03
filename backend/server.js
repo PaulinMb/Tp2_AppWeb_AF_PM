@@ -14,6 +14,7 @@ const pathConnexion = path.join(__dirname,'..','pages', 'connexion.js');
 const pathAccueil = path.join(__dirname,'..','App.js');
 
 
+
 //pour allow la request origin
 app.use(
   cors({
@@ -44,29 +45,38 @@ function requeteSelectUser(username,password,callback){  //operation dans le cal
         if (err) throw err;
         console.log("Connected");
     
-        var sqlQuery = "SELECT * FROM defaultdb.Utilisateur u WHERE u.user_name = ? AND u.user_password = ?";
+        var sqlQuery = "SELECT * FROM defaultdb.Utilisateur u WHERE u.user_name = ?";
         conn.query(sqlQuery,[username, password],(err, rows, fields)=>{
-            if (err) throw err;
-            if(rows!==undefined){
+            if (err){
+                callback(null,bcryptErr);
+            };
+            if(rows.length>0){
                 data = rows;
                 const user = rows[0];
                 const hashedPassword = user.user_password; 
-            }
-
-            bcrypt.compare(password, hashedPassword, (bcryptErr, result) => {
-            if (bcryptErr) {
-                conn.release();
-                console.log("Deconnected");
-                return callback(data, bcryptErr);
-            }
             
-
-            conn.release();
-            console.log("Deconnected");
-            //call back recois le data selectionné en bd
-            callback(data,err);
-        })
+            console.log(password +" "+hashedPassword)
+            bcrypt.compare(password, hashedPassword, (bcryptErr, result) => {
+                if(bcryptErr){
+                    console.log("bcrypt error")
+                    callback(null,null);
+                }
+                if (!result) {
+                    console.log("invalide username password")
+                    callback(null,null);
+                }
+                else{
+                    console.log("valide ")
+                    console.log(user)
+                    callback(user,null );
+                }
+                conn.release();
+            })
+            }else{
+                callback(null,null);
+            }
     });
+})
 }
 
 async function crypt(pw){
@@ -133,6 +143,18 @@ function createEvent(type,userid,callback){
 })
 }
 
+function generateToken(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomString = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters.charAt(randomIndex);
+    }
+  
+    return randomString;
+  }
+
 //API'S--------------------------------------
 
 // gestion de session
@@ -142,7 +164,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.get("/api",(req,res)=>{
+/*app.get("/api",(req,res)=>{
 
     const session = req.session;
 
@@ -153,7 +175,7 @@ app.get("/api",(req,res)=>{
     console.log(req.session.cookie)
     console.log(req.session.customProperty)
     res.json({"answer":"succes"}).end();
-});
+});*/
 
 app.post("/createEvent",(req,res)=>{
     let retMessage = {"EstCreer":false};
@@ -208,10 +230,6 @@ app.get("/", (req, res) => {
     res.sendFile(pathAccueil);
 });
 
-// inscription
-app.get("/inscription", (req, res) => {
-    res.sendFile(pathInscription);
-});
 
 app.post("/api/inscription", (req, res) => {
     const { username, password } = req.body;
@@ -250,34 +268,48 @@ app.get("/connexion", (req, res) => {
 });
 //validation de connection utilisateur
 app.post("/api/connexion",(req,res)=>{
+    console.log(req.session)
     const { username, password } = req.body;
     // avec requeteSelectUser
     requeteSelectUser(username,password, (data, err) => {
-        if (err) {
-            console.error("Erreur lors de la connexion depuis la base de données");
-            res.json({estLoggedIn:false,message:"Erreur lors de la connexion depuis la base de données"}).end();
-            //res.redirect("/connexion");
-        } else if (data.length > 0) {
-            // si password est hashé
-            const user = data[0];
-                if (bcryptErr || !bcryptRes) {
-                    console.error("Mot de passe incorrect");
-                    res.json({estLoggedIn:false,message:"Mot de passe incorrect"}).end();
-                    //res.redirect("/connexion");
+        if (data==null) {
+            console.error("erreur de connection");
+            res.json({}).end();}
+        else{
+            console.error("connection succes");
+            //set le token associé à cette connexion
+
+            let token = req.session.token
+            if(token==undefined){
+                token = generateToken(10);
+                req.session.token = token;
+            }
+            req.session.cookie.originalMaxAge = 999999;
+            //save session
+            req.session.save((err) => {
+                if (err) {
+                  console.error('Error saving session:', err);
+                  res.send('Session not saved');
                 } else {
-                    // Stocke l'utilisateur en session
-                    req.session.user = username;
-                    console.error("Connection succes");
-                    //res.redirect("/calendrier");
-                    res.json({estLoggedIn:true,message:"Connection succes"}).end();
+                  console.log("Session created");
+                  res.send({"token":token}).end();
                 }
-        } else {
-            console.error("Utilisateur introuvable");
-            ///res.redirect("/connexion");
-            res.json({estLogedIn:false,message:"Utilisateur introuvable"}).end();
+              });
         }
     });
 });
+
+app.get("/api/getToken",(res,req)=>{
+    console.log(req.body.token +"  "+req.session.token)
+    if(req.body.token==req.session.token){
+        res.send({"isConnected":true}).end();
+    }
+    else{
+        res.send({"isConnected":false}).end();
+    }
+    req.body.token
+
+})
 
 
 // DeConnexion
