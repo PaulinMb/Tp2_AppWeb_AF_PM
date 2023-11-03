@@ -5,9 +5,8 @@ import axios from 'axios';
 function Inscription() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [loginError, setMsgErreur] = useState('');
-
-    const handleLogin = () => {
+    const handleLogin = (event) => {
+        event.preventDefault()
 
         const userData = {
             username: username,
@@ -19,18 +18,21 @@ function Inscription() {
                 if (response.data.success) {
                     window.location.href = '/accueil.js';
                 } else {
-                    setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
+                    const  message= "\"Nom d'utilisateur ou mot de passe incorrect.\"";
+                    console.log(message)
+                    //setMsgErreur();
                 }
             })
             .catch(error => {
-                setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                const  message= "\"Nom d'utilisateur ou mot de passe incorrect.\"";
+                console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.")
+                //setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
             });
     };
 
     return (
         <div>
             <h1>Inscription</h1>
-            <form>
                 <label htmlFor="username">Nom d'utilisateur</label>
                 <input
                     type="text"
@@ -49,8 +51,7 @@ function Inscription() {
                     required
                 />
                 <br />
-                <button type="submit">S'inscrire</button>
-            </form>
+                <button onClick={handleLogin} type="submit">S'inscrire</button>
         </div>
     );
 }
