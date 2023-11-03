@@ -38,6 +38,7 @@ var connPool = mysql.createPool({
 //requete et connection pour aller chercher l'utilisateur selon les paramètres
 function requeteSelectUser(username,password,callback){  //operation dans le callback
     var data = []
+    console.log(username + " "+password);
     //connection et requete
     connPool.getConnection((err,conn)=> {
         if (err) throw err;
@@ -48,7 +49,17 @@ function requeteSelectUser(username,password,callback){  //operation dans le cal
             if (err) throw err;
             if(rows!==undefined){
                 data = rows;
+                const user = rows[0];
+                const hashedPassword = user.user_password; 
             }
+
+            bcrypt.compare(password, hashedPassword, (bcryptErr, result) => {
+            if (bcryptErr) {
+                conn.release();
+                console.log("Deconnected");
+                return callback(data, bcryptErr);
+            }
+            
 
             conn.release();
             console.log("Deconnected");
@@ -56,6 +67,11 @@ function requeteSelectUser(username,password,callback){  //operation dans le cal
             callback(data,err);
         })
     });
+}
+
+async function crypt(pw){
+    let hashedPassword = await bcrypt.hash(pw,10);
+    return hashedPassword;
 }
 
 //requete et connection pour effacer des événements
@@ -207,12 +223,14 @@ app.post("/api/inscription", (req, res) => {
         } else {
             // insere l'utilisateur et le mot de passe hashé a la bd
             const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
-            conn.query(sqlQuery, [username, hash], (err, result) => {
+            connPool.query(sqlQuery, [username, hash], (err, result) => {
                 if (err) {
                     console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données");
-                    res.redirect("/inscription");
+                    //res.redirect("/inscription");
+                    res.send("user created").end();
                 } else {
-                    res.redirect("/");
+                   // res.redirect("/");
+                   res.send("user created").end();
                 }
             });
         }
@@ -233,9 +251,8 @@ app.get("/connexion", (req, res) => {
 //validation de connection utilisateur
 app.post("/api/connexion",(req,res)=>{
     const { username, password } = req.body;
-
     // avec requeteSelectUser
-    requeteSelectUser(username, password, (data, err) => {
+    requeteSelectUser(username,password, (data, err) => {
         if (err) {
             console.error("Erreur lors de la connexion depuis la base de données");
             res.json({estLoggedIn:false,message:"Erreur lors de la connexion depuis la base de données"}).end();
@@ -243,19 +260,17 @@ app.post("/api/connexion",(req,res)=>{
         } else if (data.length > 0) {
             // si password est hashé
             const user = data[0];
-            bcrypt.compare(password, user.user_password, (bcryptErr, bcryptRes) => {
                 if (bcryptErr || !bcryptRes) {
                     console.error("Mot de passe incorrect");
-                    res.json({estLoggedIn:true,message:"Mot de passe incorrect"}).end();
+                    res.json({estLoggedIn:false,message:"Mot de passe incorrect"}).end();
                     //res.redirect("/connexion");
                 } else {
                     // Stocke l'utilisateur en session
                     req.session.user = username;
                     console.error("Connection succes");
                     //res.redirect("/calendrier");
-                    res.json({estLoggedIn:false,message:"Connection succes"}).end();
+                    res.json({estLoggedIn:true,message:"Connection succes"}).end();
                 }
-            });
         } else {
             console.error("Utilisateur introuvable");
             ///res.redirect("/connexion");
