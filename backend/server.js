@@ -128,9 +128,14 @@ app.use(session({
 
 app.get("/api",(req,res)=>{
 
-    //console.log(req.body);
+    const session = req.session;
 
-    //res.send("ff").end();
+    // Modify the session cookie properties or add custom properties
+    session.cookie.maxAge = 1000 * 60 * 60; // Change the max age to 1 hour (in milliseconds)
+    session.cookie.httpOnly = true; // Make the cookie HTTP-only
+    session.customProperty = "This is a custom property";
+    console.log(req.session.cookie)
+    console.log(req.session.customProperty)
     res.json({"answer":"succes"}).end();
 });
 

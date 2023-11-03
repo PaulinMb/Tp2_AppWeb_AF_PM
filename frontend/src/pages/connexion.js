@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
 Axios.defaults.withCredentials = true;
 
@@ -7,7 +7,29 @@ function Connexion(props) {
     const [password, setPassword] = useState('');
     const [msgErreur, setMsgErreur] = useState('');
 
-    const handleLogin = () => {
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          // envoi le token pour autentifié user
+          authenticateUserWithToken(token);
+        }
+      }, []);
+
+    const authenticateUserWithToken = (token) => {
+        // appel l'api pour valider le token 
+        // si valide ajoute le user au state
+        //si invalide remove le user du state
+    };
+
+    const handleLogout = () => {
+        // Clear le token du localstorage
+        localStorage.removeItem('token');
+        //setUser(null);
+    };
+
+    const handleLogin = (event) => {
+        //eviter que le form refresh
+        event.preventDefault();
 
         const userData = {
             username: username,
@@ -19,6 +41,7 @@ function Connexion(props) {
                 if (response.data.estLoggedIn==true) {
                     // changement vers calandrier // trouver un moyen
                     //window.location.href = '/calendrier.js';
+                    localStorage.setItem("token",response.data.token)
                     props.functionRemonteLeState(response.data.estLoggedIn)
                     console.log("response.data")
                 } else {
