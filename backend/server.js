@@ -38,7 +38,6 @@ var connPool = mysql.createPool({
 
 //requete et connection pour aller chercher l'utilisateur selon les paramètres
 function requeteSelectUser(username,password,callback){  //operation dans le callback
-    var data = []
     console.log(username + " "+password);
     //connection et requete
     connPool.getConnection((err,conn)=> {
@@ -77,11 +76,6 @@ function requeteSelectUser(username,password,callback){  //operation dans le cal
             }
     });
 })
-}
-
-async function crypt(pw){
-    let hashedPassword = await bcrypt.hash(pw,10);
-    return hashedPassword;
 }
 
 //requete et connection pour effacer des événements
@@ -139,7 +133,6 @@ function createEvent(type,userid,callback){
             callback(err);
         })
     })
-    
 })
 }
 
@@ -255,18 +248,7 @@ app.post("/api/inscription", (req, res) => {
     });
 });
 
-
-
-// Connexion
-app.get("/connexion", (req, res) => {
-    // si l'user est deja connecte
-    if (req.session && req.session.user) {
-        res.redirect("/calendrier");
-    } else {
-        res.sendFile(pathConnexion);
-    }
-});
-//validation de connection utilisateur
+//validation de connexion utilisateur
 app.post("/api/connexion",(req,res)=>{
     console.log(req.body)
     const { username, password } = req.body;
@@ -291,7 +273,7 @@ app.post("/api/connexion",(req,res)=>{
                   console.error('Error saving session:', err);
                   res.send('Session not saved');
                 } else {
-                  console.log("Session created");
+                  //console.log("Session created"+ req.session);
                   res.send({"token":token}).end();
                 }
               });
@@ -299,15 +281,21 @@ app.post("/api/connexion",(req,res)=>{
     });
 });
 
-app.get("/api/getToken",(res,req)=>{
-    console.log(req.body.token +"  "+req.session.token)
-    if(req.body.token==req.session.token){
-        res.send({"isConnected":true}).end();
+//valide que la session user contient bien un token valide
+app.get("/api/getToken",(req,res)=>{
+    console.log("comparetoken : "+"clientside : "+req.query.token+" serverside : "+req.session.token);
+    if(req.session.token!==undefined){
+        if(req.query.token==req.session.token){
+            res.send({"isConnected":true}).end();
+        }
+        else{
+            res.send({"isConnected":false}).end();
+        }
     }
     else{
         res.send({"isConnected":false}).end();
     }
-    req.body.token
+
 
 })
 

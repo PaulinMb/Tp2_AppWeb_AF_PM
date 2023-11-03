@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "0.1.0",
-  "proxy":"http://localhost:5000",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.9",
@@ -9,7 +9,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.5.1",
+    "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
@@ -27,7 +27,8 @@
     "start": "react-scripts start --no-hmr",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "setup": "npm install axios"
   },
   "eslintConfig": {
     "extends": [

@@ -7,29 +7,9 @@ function Connexion(props) {
     const [password, setPassword] = useState('');
     const [msgErreur, setMsgErreur] = useState('');
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          // envoi le token pour autentifié user
-          authenticateUserWithToken(token);
-        }
-      }, []);
-
-    const authenticateUserWithToken = (token) => {
-        // appel l'api pour valider le token 
-        // si valide ajoute le user au state
-        //si invalide remove le user du state
-    };
-
-    const handleLogout = () => {
-        // Clear le token du localstorage
-        localStorage.removeItem('token');
-        //setUser(null);
-    };
-
     const handleLogin = (event) => {
         //eviter que le form refresh
-        event.preventDefault();
+        //event.preventDefault();
 
         const userData = {
             username: username,
@@ -38,23 +18,38 @@ function Connexion(props) {
 
         Axios.post('http://localhost:5000/api/connexion', userData)
             .then(response => {
-                console.log(response.data)
-                if (response.data) {
-                    // changement vers calandrier // trouver un moyen
-                    //window.location.href = '/calendrier.js';
+
+                if (response.data.token!==undefined) {
+                    //set le token associé à cette session 
                     localStorage.setItem("token",response.data.token)
-                    props.functionRemonteLeState(response.data.estLoggedIn)
-                    console.log(response.data)
+                    console.log("token:"+response.data.token)
+                    setUsername(userData.username);
+                    setPassword(userData.password);
+
+                    setMsgErreur("");
+                    console.log("succes connexion")
+                    remonterState();
+                    
+
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                     console.log("Nom d'utilisateur ou mot de passe incorrect.")
                 }
             })
             .catch(error => {
-                setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
-                console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.")
+                console.log(error)
+                if(error){
+                    setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                    console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                }
+                
             });
     };
+
+    const remonterState = ()=>{
+        props.functionRemonteLeUser(username);
+        props.functionRemonteLePass(password);
+    }
 
     return (
         <div>
@@ -81,10 +76,10 @@ function Connexion(props) {
                 <button type="submit">Se connecter</button>
 
             </form>
-            <button >api call</button>
-            <button onClick={handleLogin}>api call</button>  
+            {msgErreur}
         </div>
     );
+    //<button onClick={handleLogin}>api call</button>  
 
 }
 
