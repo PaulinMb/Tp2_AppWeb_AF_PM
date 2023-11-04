@@ -193,7 +193,7 @@ app.post("/api/inscription", (req, res) => {
         } else {
             // insere l'utilisateur et le mot de passe hashé a la bd
             const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
-            conn.query(sqlQuery, [username, hash], (err, result) => {
+            connPool.query(sqlQuery, [username, hash], (err, result) => {
                 if (err) {
                     console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données");
                     res.redirect("/inscription");

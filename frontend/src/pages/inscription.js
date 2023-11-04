@@ -1,38 +1,37 @@
-// Inscription.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import Axios from "axios";
+Axios.defaults.withCredentials = true;
+
 
 function Inscription() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const handleLogin = (event) => {
-        event.preventDefault()
+
+    const handleInscription = (event) => {
+        event.preventDefault();
 
         const userData = {
             username: username,
             password: password
         }
 
-        axios.post('/api/connexion', userData)
+        Axios.post('http://localhost:5000/api/inscription', userData)
             .then(response => {
-                if (response.data.success) {
-                    window.location.href = '/accueil.js';
-                } else {
-                    const  message= "\"Nom d'utilisateur ou mot de passe incorrect.\"";
-                    console.log(message)
-                    //setMsgErreur();
-                }
+                // Redirige vers la page accueil après une inscription réussie
+                setUsername(userData.username);
+                setPassword(userData.password);
+                console.log("succes connexion")
             })
             .catch(error => {
-                const  message= "\"Nom d'utilisateur ou mot de passe incorrect.\"";
-                console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.")
-                //setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                console.error("Une erreur s'est produite lors de l'inscription.", error);
+                // Gérez l'erreur d'inscription ici
             });
     };
 
     return (
         <div>
             <h1>Inscription</h1>
+            <form onSubmit={handleInscription}>
                 <label htmlFor="username">Nom d'utilisateur</label>
                 <input
                     type="text"
@@ -51,7 +50,8 @@ function Inscription() {
                     required
                 />
                 <br />
-                <button onClick={handleLogin} type="submit">S'inscrire</button>
+                <button type="submit">S'inscrire</button>
+            </form>
         </div>
     );
 }

@@ -18,7 +18,7 @@ const pathAccueil = path.join(__dirname,'..','App.js');
 //pour allow la request origin
 app.use(
   cors({
-    origin: ["http://localhost:3000","http://localhost:3001"],
+    origin: ["http://localhost:3000","http://localhost:3001",,"http://localhost:3002"],
     methods: ["GET", "POST","DELETE","PUT"],
     credentials: true,
   })
@@ -223,29 +223,78 @@ app.get("/", (req, res) => {
     res.sendFile(pathAccueil);
 });
 
-
+//
+// app.post("/api/inscription", (req, res) => {
+//     const { username, password } = req.body;
+//     // hashage du password
+//     bcrypt.hash(password, 10, (err, hash) => {
+//         if (err) {
+//             console.error("Erreur de hachage de mot de passe");
+//             res.redirect("/inscription");
+//         } else {
+//             // insere l'utilisateur et le mot de passe hashé a la bd
+//             const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
+//             connPool.query(sqlQuery, [username, hash], (err, result) => {
+//                 if (err) {
+//                     console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données");
+//                     //res.redirect("/inscription");
+//                     res.send("user created").end();
+//                 } else {
+//                    // res.redirect("/");
+//                    res.send("user created").end();
+//                 }
+//             });
+//         }
+//     });
+// });
+app.get("/api/inscription", (req, res) => {
+    // Affiche la page d'inscription
+    const messageBienvenue = "<h1>Nouvelle utilisateur</h1>";
+    res.send(messageBienvenue);
+    res.sendFile(pathInscription); // Assurez-vous que pathInscription pointe vers votre fichier d'inscription
+});
 app.post("/api/inscription", (req, res) => {
     const { username, password } = req.body;
-    // hashage du password
-    bcrypt.hash(password, 10, (err, hash) => {
+
+    // Vérifiez d'abord si l'utilisateur existe déjà
+    const checkUserQuery = "SELECT id_utilisateur FROM defaultdb.Utilisateur WHERE user_name = ?";
+    connPool.query(checkUserQuery, [username], (err, userRows, userFields) => {
         if (err) {
-            console.error("Erreur de hachage de mot de passe");
-            res.redirect("/inscription");
-        } else {
-            // insere l'utilisateur et le mot de passe hashé a la bd
-            const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
-            connPool.query(sqlQuery, [username, hash], (err, result) => {
-                if (err) {
-                    console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données");
-                    //res.redirect("/inscription");
-                    res.send("user created").end();
-                } else {
-                   // res.redirect("/");
-                   res.send("user created").end();
-                }
-            });
+            console.error("Erreur lors de la vérification de l'existence de l'utilisateur", err);
+            return res.redirect("/inscription");
         }
+
+        if (userRows.length > 0) {
+            console.error("Cet utilisateur existe déjà");
+            return res.redirect("/inscription");
+        }
+
+        // Si l'utilisateur n'existe pas, vous pouvez l'ajouter à la base de données
+        bcrypt.hash(password, 10, (err, hash) => {
+            if (err) {
+                console.error("Erreur de hachage de mot de passe");
+                return res.redirect("/inscription");
+            } else {
+                // Insère le nouvel utilisateur
+                const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
+                connPool.query(sqlQuery, [username, hash], (err, result) => {
+                    if (err) {
+                        console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données", err);
+                        return res.redirect("/inscription");
+                    } else {
+                        // Redirige vers la page de connexion après une inscription réussie
+                        return res.redirect("/connexion");
+                    }
+                });
+            }
+        });
     });
+});
+app.get("/api/connexion", (req, res) => {
+    // Affiche la page d'inscription
+    const messageBienvenue = "<h1>Connect utilisateur</h1>";
+    res.send(messageBienvenue);
+    res.sendFile(pathInscription); // Assurez-vous que pathInscription pointe vers votre fichier d'inscription
 });
 
 //validation de connexion utilisateur
