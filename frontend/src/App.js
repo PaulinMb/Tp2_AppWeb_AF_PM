@@ -79,17 +79,18 @@ function App() {
                             Connexion
                         </NavLink>
                     </div>
-                    { isConnected ? 
-                    (<div style={{margin: '15px'}}>
-                        <NavLink to="/calendrier" style={({isActive}) => ({
-                            color: isActive ? '#333' : '#999',
-                            background: isActive ? 'white' : '#333',
-                            padding: "15px",
-                            textDecoration: 'none'
-                        })}>
-                            Calendrier
-                        </NavLink>
-                    </div>) : null
+                    {isConnected ?
+                        <div style={{margin: '15px'}}>
+                            <NavLink to="/calendrier" style={({isActive}) => ({
+                                color: isActive ? '#333' : '#999',
+                                background: isActive ? 'white' : '#333',
+                                padding: "15px",
+                                textDecoration: 'none'
+                            })}>
+                                Calendrier
+                            </NavLink>
+                        </div>
+                        : null
                     }
                 </div>
                 <Routes>
