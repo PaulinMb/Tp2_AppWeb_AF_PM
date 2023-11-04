@@ -289,12 +289,7 @@ app.post("/api/inscription", (req, res) => {
         });
     });
 });
-app.get("/api/connexion", (req, res) => {
-    // Affiche la page d'inscription
-    const messageBienvenue = "<h1>Connect utilisateur</h1>";
-    res.send(messageBienvenue);
-    res.sendFile(pathInscription); // Assurez-vous que pathInscription pointe vers votre fichier d'inscription
-});
+
 
 //validation de connexion utilisateur
 app.post("/api/connexion",(req,res)=>{
@@ -304,22 +299,22 @@ app.post("/api/connexion",(req,res)=>{
     requeteSelectUser(username,password, (data, err) => {
         if (data==null) {
             console.error("erreur de connection");
-            res.json({}).end();}
+            res.send('Erreur de connection').end();}
         else{
             console.error("connection succes");
             //set le token associé à cette connexion
-
             let token = req.session.token
             if(token==undefined){
                 token = generateToken(10);
                 req.session.token = token;
             }
             req.session.cookie.originalMaxAge = 999999;
+
             //save session
             req.session.save((err) => {
                 if (err) {
                   console.error('Error saving session:', err);
-                  res.send('Session not saved');
+                  res.send('Session not saved').end();
                 } else {
                   //console.log("Session created"+ req.session);
                   res.send({"token":token}).end();
@@ -354,6 +349,7 @@ app.get("/deconnexion", (req, res) => {
         if (err) {
             console.error("Erreur lors de la déconnexion");
         }
+        console.log("session detruite")
         res.redirect("/");
     });
 });

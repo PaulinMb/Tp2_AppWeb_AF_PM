@@ -15,6 +15,7 @@ function App() {
     //lancer à chaque render pour valider le token du user (called whenever the component re-renders due to a change in state or props.)
     useEffect(() => {
         const token = localStorage.getItem('token');
+        console.log("token : "+localStorage.getItem("token"))
         if (token) {
           // envoi le token pour autentifié user
           authenticateUserWithToken();
@@ -38,6 +39,11 @@ function App() {
         // Clear le token du localstorage
         localStorage.removeItem('token');
         //setUser(null);
+        window.location.reload()
+        Axios.get('/deconnexion') 
+        .then(response => {
+        console.log('Logged out successfully');
+      });
     };
 
     return (
@@ -69,7 +75,7 @@ function App() {
                             Inscription
                         </NavLink>
                     </div>
-                    <div style={{margin: '15px'}}>
+                    { !isConnected ?  <div style={{margin: '15px'}}>
                         <NavLink to="/connexion" style={({isActive}) => ({
                             color: isActive ? '#333' : '#999',
                             background: isActive ? 'white' : '#333',
@@ -78,7 +84,7 @@ function App() {
                         })}>
                             Connexion
                         </NavLink>
-                    </div>
+                    </div> : null }
                     {isConnected ?
                         <div style={{margin: '15px'}}>
                             <NavLink to="/calendrier" style={({isActive}) => ({
@@ -92,12 +98,13 @@ function App() {
                         </div>
                         : null
                     }
+                    <a style={{position:"absolute",right:"15px",color:"blueviolet",cursor: 'pointer', border: '1px solid #000',padding: '10px'}} onClick={handleLogout}>Deconnect</a>
                 </div>
                 <Routes>
                     <Route exact path="/" element={<Accueil/>}/>
                     <Route exact path="/inscription" element={<Inscription/>}/>
-                    <Route exact path="/connexion" element={<Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} />}/>  
-                    <Route exact path="calendrier/" element={<Calendrier />}/>
+                    <Route exact path="/connexion" element={!isConnected ? <Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} />:null}/>
+                    <Route exact path="/calendrier" element={ isConnected ? <Calendrier />:<Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} />}/>
                 </Routes>
             </BrowserRouter>
         </div>

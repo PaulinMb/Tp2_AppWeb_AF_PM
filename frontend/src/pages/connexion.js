@@ -1,15 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
+import { useNavigate } from "react-router-dom";
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
 Axios.defaults.withCredentials = true;
+
+    
 
 function Connexion(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [msgErreur, setMsgErreur] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = (event) => {
         //eviter que le form refresh
-        //event.preventDefault();
+        event.preventDefault();
 
         const userData = {
             username: username,
@@ -22,15 +26,14 @@ function Connexion(props) {
                 if (response.data.token!==undefined) {
                     //set le token associé à cette session 
                     localStorage.setItem("token",response.data.token)
-                    console.log("token:"+response.data.token)
                     setUsername(userData.username);
                     setPassword(userData.password);
-
                     setMsgErreur("");
                     console.log("succes connexion")
                     remonterState();
                     
-
+                    
+                    
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                     console.log("Nom d'utilisateur ou mot de passe incorrect.")
@@ -42,6 +45,9 @@ function Connexion(props) {
                     setMsgErreur("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
                     console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
                 }
+                else{
+                    console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
+                }
                 
             });
     };
@@ -49,6 +55,9 @@ function Connexion(props) {
     const remonterState = ()=>{
         props.functionRemonteLeUser(username);
         props.functionRemonteLePass(password);
+        
+        navigate("/calendrier");
+        window.location.reload()
     }
 
     return (
