@@ -17,14 +17,12 @@ function Inscription() {
 
         Axios.post('http://localhost:5000/api/inscription', userData)
             .then(response => {
-                // Redirige vers la page accueil après une inscription réussie
                 setUsername(userData.username);
                 setPassword(userData.password);
-                console.log("succes connexion")
+                console.log("succes inscription")
             })
             .catch(error => {
                 console.error("Une erreur s'est produite lors de l'inscription.", error);
-                // Gérez l'erreur d'inscription ici
             });
     };
 
@@ -39,6 +37,7 @@ function Inscription() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    autoComplete="username"
                 />
                 <br />
                 <label htmlFor="password">Mot de passe</label>
@@ -48,6 +47,7 @@ function Inscription() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="current-password"
                 />
                 <br />
                 <button type="submit">S'inscrire</button>

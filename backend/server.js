@@ -251,12 +251,12 @@ app.get("/api/inscription", (req, res) => {
     // Affiche la page d'inscription
     const messageBienvenue = "<h1>Nouvelle utilisateur</h1>";
     res.send(messageBienvenue);
-    res.sendFile(pathInscription); // Assurez-vous que pathInscription pointe vers votre fichier d'inscription
+    res.sendFile(pathInscription);
 });
 app.post("/api/inscription", (req, res) => {
     const { username, password } = req.body;
 
-    // Vérifiez d'abord si l'utilisateur existe déjà
+    // verifie d'abord si l'utilisateur existe déjà
     const checkUserQuery = "SELECT id_utilisateur FROM defaultdb.Utilisateur WHERE user_name = ?";
     connPool.query(checkUserQuery, [username], (err, userRows, userFields) => {
         if (err) {
@@ -269,7 +269,7 @@ app.post("/api/inscription", (req, res) => {
             return res.redirect("/inscription");
         }
 
-        // Si l'utilisateur n'existe pas, vous pouvez l'ajouter à la base de données
+        // Si l'utilisateur n'existe pas, ajout à la base de données
         bcrypt.hash(password, 10, (err, hash) => {
             if (err) {
                 console.error("Erreur de hachage de mot de passe");
@@ -282,8 +282,7 @@ app.post("/api/inscription", (req, res) => {
                         console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données", err);
                         return res.redirect("/inscription");
                     } else {
-                        // Redirige vers la page de connexion après une inscription réussie
-                        return res.redirect("/connexion");
+                        console.error("Reussi");
                     }
                 });
             }
