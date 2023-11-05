@@ -1,7 +1,9 @@
 import React, { useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
+import PropTypes from 'prop-types';
 Axios.defaults.withCredentials = true;
+
 
     
 
@@ -87,5 +89,10 @@ function Connexion(props) {
     //<button onClick={handleLogin}>api call</button>  
 
 }
+
+Connexion.propTypes = {
+    functionRemonteLeUser: PropTypes.func.isRequired,
+    functionRemonteLePass: PropTypes.func.isRequired,
+  };
 
 export default Connexion;

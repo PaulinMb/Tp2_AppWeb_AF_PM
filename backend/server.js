@@ -1,29 +1,31 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
+
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+
 var mysql = require('mysql');
-const e = require('express');
+
 const bcrypt = require('bcrypt');
+
 const session = require('express-session');
+
 const cors = require("cors");
 
 const path = require('path');
 const pathInscription = path.join(__dirname,'..','pages', '/inscription.js');
-const pathConnexion = path.join(__dirname,'..','pages', 'connexion.js');
+//const pathConnexion = path.join(__dirname,'..','pages', 'connexion.js');
 const pathAccueil = path.join(__dirname,'..','App.js');
 
 
-
-//pour allow la request origin
+//pour allow la request origin port 3000 à 3002
 app.use(
   cors({
-    origin: ["http://localhost:3000","http://localhost:3001",,"http://localhost:3002"],
+    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002"],
     methods: ["GET", "POST","DELETE","PUT"],
     credentials: true,
   })
 );
-
 
 //connection
 //pool de connection permet d'avoir plusieurs connections et les réutiliser
@@ -78,6 +80,7 @@ function requeteSelectUser(username,password,callback){  //operation dans le cal
 })
 }
 
+//function generate un token la longeur du token est passé en paramètre
 function generateToken(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let randomString = '';
@@ -243,6 +246,7 @@ app.post("/api/createEvent",(req,res)=>{
     }    
 })
 
+//effacer l'évenement entrer par l'utilisateur
 app.delete("/api/deleteEvent",(req,res)=>{
         console.log(req.query.title);
         let title = req.query.title;

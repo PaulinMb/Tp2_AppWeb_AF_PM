@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid';
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
+import PropTypes from 'prop-types';
 Axios.defaults.withCredentials = true;
 
 
@@ -86,5 +87,21 @@ const Calendrier = () => {
         />
     </div>);
 }
+
+Calendrier.propTypes = {
+    messageErreur: PropTypes.string.isRequired,
+    messageErreur2: PropTypes.string.isRequired,
+    newEventDate: PropTypes.string.isRequired,
+    newEventTitre: PropTypes.string.isRequired,
+    eventsTable: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    setNewEventDate: PropTypes.func.isRequired,
+    setNewEventTitre: PropTypes.func.isRequired,
+  };
+  
 
 export default Calendrier;
