@@ -5,6 +5,7 @@ import Connexion from './pages/connexion';
 import {BrowserRouter, Routes, Route, NavLink} from "react-router-dom";
 import Calendrier from "./pages/calendrier";
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
+import "./App.css";
 Axios.defaults.withCredentials = true;
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
     const handleLogout = () => {
         // Clear le token du localstorage
         localStorage.removeItem('token');
+        setConnected(false)
         //setUser(null);
         window.location.reload()
         Axios.get('/deconnexion') 
@@ -54,6 +56,7 @@ function App() {
                     background: '#333',
                     padding: '5px 0 5px 5px',
                     fontSize: '15px',
+                    position:"relative"
                 }}>
                     <div style={{margin: '15px'}}>
                         <NavLink to="/" style={({isActive}) => ({
@@ -98,7 +101,7 @@ function App() {
                         </div>
                         : null
                     }
-                    <a style={{position:"absolute",right:"15px",color:"blueviolet",cursor: 'pointer', border: '1px solid #000',padding: '10px'}} onClick={handleLogout}>Deconnect</a>
+                    { isConnected ? <a style={{position:"absolute",right:"15px",color:"blueviolet",cursor: 'pointer',padding: '15px'}} onClick={handleLogout}>Déconnexion</a> : null}
                 </div>
                 <Routes>
                     <Route exact path="/" element={<Accueil/>}/>

@@ -78,64 +78,6 @@ function requeteSelectUser(username,password,callback){  //operation dans le cal
 })
 }
 
-//requete et connection pour effacer des événements
-function deleteEvent(eventid,callback){
-    connPool.getConnection((err,conn)=>{
-        if (err) throw err;
-        console.log("Connected");
-
-        var sqlQuery = "delete from defaultdb.EvenementsUser eu where eu.id_event = ?";
-        conn.query(sqlQuery,[eventid],(err, rows, fields)=>{
-            if (err) throw err;
-
-            conn.release();
-            console.log("Deconnected");
-            callback(err);
-
-        })
-    })
-}
-
-//requete et connection pour créer des événements
-function createEvent(type,userid,callback){
-    connPool.getConnection((err,conn)=>{
-        if (err) throw err;
-        console.log("Connected");
-
-        //valide que utilisateur existe bien
-        const checkUserQuery = "SELECT id_utilisateur FROM defaultdb.Utilisateur WHERE id_utilisateur = ?";
-        conn.query(checkUserQuery, [userid], (err, userRows, userFields) => {
-            //si erreur sql
-            if (err) {
-                console.error("error select id_utilisateur dans Utilisateur", err);
-                conn.release();
-                //stop ici
-                return callback(err);
-            }
-
-            //si utilisateur existe pas
-            if (userRows.length === 0) {
-                // User existe pas
-                console.log("utilisateur n'existe pas");
-                conn.release();
-                //stop ici
-                return callback(new Error("utilisateur n'existe pas"));
-            }
-
-        var sqlQuery = "insert into defaultdb.EvenementsUser (even_type, utilisateur_id, date_event)  VALUES ( ? , ? , ? )";
-        let today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
-        conn.query(sqlQuery,[type,userid,formattedDate],(err, rows, fields)=>{
-            if (err) throw err;
-
-            conn.release();
-            console.log("Deconnected");
-            callback(err);
-        })
-    })
-})
-}
-
 function generateToken(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let randomString = '';
@@ -146,7 +88,7 @@ function generateToken(length) {
     }
   
     return randomString;
-  }
+}
 
 //API'S--------------------------------------
 
@@ -157,65 +99,6 @@ app.use(session({
     saveUninitialized: true
 }));
 
-/*app.get("/api",(req,res)=>{
-
-    const session = req.session;
-
-    // Modify the session cookie properties or add custom properties
-    session.cookie.maxAge = 1000 * 60 * 60; // Change the max age to 1 hour (in milliseconds)
-    session.cookie.httpOnly = true; // Make the cookie HTTP-only
-    session.customProperty = "This is a custom property";
-    console.log(req.session.cookie)
-    console.log(req.session.customProperty)
-    res.json({"answer":"succes"}).end();
-});*/
-
-app.post("/createEvent",(req,res)=>{
-    let retMessage = {"EstCreer":false};
-
-    if(req.body.typeevent !=null && req.body.userid !=null){
-        createEvent(req.body.typeevent,req.body.userid,(err)=>{
-            if(err===null){
-                retMessage.EstCreer = true;
-                console.log("event créer");
-                res.json(retMessage).end();
-            }
-            else{
-                console.log("error inserting event");
-                res.json(retMessage).end();
-            }
-        })
-
-    }else{
-        console.log("body null");
-        res.json(retMessage).end();
-    }
-})
-
-//delete userevents dans la table sql
-app.delete("/deleteEvent",(req,res)=>{
-    let retMessage = {"EstDelete":false};
-
-    if(req.body.idevent!=null){
-        deleteEvent(req.body.idevent,(err)=>{
-            if(err===null){
-                retMessage.EstDelete = true;
-                console.log("event effacé");
-                res.json(retMessage).end();
-            }
-            else{
-                console.log("error deleting event");
-                res.json(retMessage).end();
-            }
-        })
-    }
-    else{
-        console.log("body null");
-        res.json(retMessage).end();
-    }
-})
-
-
 // Accueil
 app.get("/", (req, res) => {
     const messageBienvenue = "<h1>Bienvenue sur la page d'accueil de votre calendrier.</h1>";
@@ -223,30 +106,7 @@ app.get("/", (req, res) => {
     res.sendFile(pathAccueil);
 });
 
-//
-// app.post("/api/inscription", (req, res) => {
-//     const { username, password } = req.body;
-//     // hashage du password
-//     bcrypt.hash(password, 10, (err, hash) => {
-//         if (err) {
-//             console.error("Erreur de hachage de mot de passe");
-//             res.redirect("/inscription");
-//         } else {
-//             // insere l'utilisateur et le mot de passe hashé a la bd
-//             const sqlQuery = "INSERT INTO defaultdb.Utilisateur (user_name, user_password) VALUES (?, ?)";
-//             connPool.query(sqlQuery, [username, hash], (err, result) => {
-//                 if (err) {
-//                     console.error("Erreur lors de l'insertion de l'utilisateur dans la base de données");
-//                     //res.redirect("/inscription");
-//                     res.send("user created").end();
-//                 } else {
-//                    // res.redirect("/");
-//                    res.send("user created").end();
-//                 }
-//             });
-//         }
-//     });
-// });
+
 app.get("/api/inscription", (req, res) => {
     // Affiche la page d'inscription
     const messageBienvenue = "<h1>Nouvelle utilisateur</h1>";
@@ -302,21 +162,27 @@ app.post("/api/connexion",(req,res)=>{
             res.send('Erreur de connection').end();}
         else{
             console.error("connection succes");
+
             //set le token associé à cette connexion
-            let token = req.session.token
+            let token = req.session.token;
             if(token==undefined){
                 token = generateToken(10);
                 req.session.token = token;
             }
+
+            //temps alloué à la session
             req.session.cookie.originalMaxAge = 999999;
+
+            //associe id utilisateur à la session
+            req.session.user_id = data.id_utilisateur;
 
             //save session
             req.session.save((err) => {
                 if (err) {
                   console.error('Error saving session:', err);
                   res.send('Session not saved').end();
-                } else {
-                  //console.log("Session created"+ req.session);
+                } else {          
+                    console.error("Succes creation session");   
                   res.send({"token":token}).end();
                 }
               });
@@ -343,7 +209,7 @@ app.get("/api/getToken",(req,res)=>{
 })
 
 
-// DeConnexion
+// détruit la session de l'utilisateur
 app.get("/deconnexion", (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -354,15 +220,74 @@ app.get("/deconnexion", (req, res) => {
     });
 });
 
-// calendrier
-app.get("/calendrier", (req, res) => {
+//créer un évenement en bd
+app.post("/api/createEvent",(req,res)=>{
+    console.log("call createevent")
+    console.log(req.body);
+    console.log(req.session);
+    const { titre,date} = req.body;
+    const idUser = req.session.user_id;
+
+    if (req.session.user_id!==undefined && req.session.token !== undefined) {
+
+        let insertQuery = "INSERT INTO defaultdb.CalendrierEvents(titre_event,date_event,fk_id_user)VALUES( ? , ? , ? );";
+        connPool.query(insertQuery, [titre,date,idUser], (err, result) => {
+            if (err) {
+                console.error("Erreur lors de l'insertion de l'event calendrier", err);
+                res.send({"message":"Erreur lors de l'insertion de l'event calendrier en db"}).end();
+            } else {
+                console.error("Event insert réussi");
+                res.send({"message":"Evenement créé avec succes"}).end();
+            }
+        })
+    }    
+})
+
+app.delete("/api/deleteEvent",(req,res)=>{
+        console.log(req.query.title);
+        let title = req.query.title;
+        let date = req.query.date;
+
+        let deleteQuery = "delete from defaultdb.CalendrierEvents where titre_event = ? and date_event = ?";
+        connPool.query(deleteQuery,[title,date],(err,result)=>{
+            if (err) {
+                console.error("Erreur lors du delete de l'event", err);
+                res.send({"message":"Erreur lors du delete de l'event"}).end();
+            } else {
+                console.error("Event delete réussi");
+                res.send({"message":"Evenement delete avec succes"}).end();
+            }
+        })
+
+});
+
+// retourne tous les évenements du calendrier associé à l'utilisateur en session
+app.get("/api/getEvents", (req, res) => {
     // controller si l'utilisateur est connecté grace session
-    if (req.session && req.session.user) {
-        // Rendre la page de calendrier avec l'élément "Calendrier"
-        // ...
+    let userId = req.session.user_id;
+    if (req.session.user_id!==undefined && req.session.token !== undefined) {
+        let selectQuery = "select * from defaultdb.CalendrierEvents where fk_id_user = ?";
+        connPool.query(selectQuery, [userId], (err, result) => {
+            if (err) {
+                console.error("Erreur lors de la lecture de la bd", err);
+                res.send({"message":"Erreur lors de la lecture en bd"}).end();
+            } else {
+                let dataArray = [];
+                for(let event of result){
+                    const eventDate = new Date(event.date_event);
+                    const formattedDate = eventDate.toLocaleDateString();
+                    dataArray.push({"title":event.titre_event,"date":formattedDate})
+                }
+
+                dataArray.push({title: 'Début du TP1', date: '2023-10-13'});
+                dataArray.push({title: 'Fin du TP1', date: '2023-11-10'});
+                console.log(dataArray)
+                res.send({"array":dataArray}).end();
+            }
+        })
     } else {
-        // Rediriger vers la page d'accueil si l'utilisateur n'est pas connecté
-        res.redirect("/");
+        console.log("Peut pas créer d'event parce que il n'y a pas de session associé à l'appeleur")
+        res.send("").end();
     }
 });
 

@@ -22,7 +22,6 @@ function Connexion(props) {
 
         Axios.post('http://localhost:5000/api/connexion', userData)
             .then(response => {
-
                 if (response.data.token!==undefined) {
                     //set le token associé à cette session 
                     localStorage.setItem("token",response.data.token)
@@ -30,10 +29,7 @@ function Connexion(props) {
                     setPassword(userData.password);
                     setMsgErreur("");
                     console.log("succes connexion")
-                    remonterState();
-                    
-                    
-                    
+                    remonterState();     
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                     console.log("Nom d'utilisateur ou mot de passe incorrect.")
