@@ -21,7 +21,7 @@ const pathAccueil = path.join(__dirname,'..','App.js');
 //pour allow la request origin port 3000 à 3002
 app.use(
   cors({
-    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://tp2-app-web-af-pm.vercel.app","https://tp2-app-web-af-pm.vercel.app"],
+    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://tp2-app-web-af-pm.vercel.app","https://tp2-app-web-af-pm.vercel.app","https://tp2-app-web-af-pm.vercel.app/connexion"],
     methods: ["GET", "POST","DELETE","PUT"],
     credentials: true,
   })
