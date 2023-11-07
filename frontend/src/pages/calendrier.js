@@ -24,7 +24,7 @@ const Calendrier = () => {
             date : newEventDate
         }
         if(newEventTitre!==''&&newEventDate!==''){
-            Axios.post("/api/createEvent",event).then(response=>{
+            Axios.post("https://cute-gold-horse-suit.cyclic.app/api/createEvent",event).then(response=>{
             if(response.data.message!==undefined){
                 setMessageErreur(response.data.message);
                 getEvents();

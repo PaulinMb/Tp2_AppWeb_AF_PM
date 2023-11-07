@@ -17,7 +17,7 @@ function Inscription() {
             password: password
         }
 
-        Axios.post('api/inscription', userData)
+        Axios.post('https://cute-gold-horse-suit.cyclic.app/api/inscription', userData)
             .then(response => {
                 console.log(response.status)
                 if(response.status===200){
