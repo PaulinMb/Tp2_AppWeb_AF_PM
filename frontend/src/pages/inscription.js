@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './css/styles.css';
 import Axios from "axios";
 Axios.defaults.withCredentials = true;
 
@@ -27,7 +28,7 @@ function Inscription() {
     };
 
     return (
-        <div>
+        <div className="inscription-container">
             <h1>Inscription</h1>
             <form onSubmit={handleInscription}>
                 <label htmlFor="username">Nom d'utilisateur</label>

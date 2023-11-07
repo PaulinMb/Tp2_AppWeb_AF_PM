@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import { useNavigate } from "react-router-dom";
+import './css/styles.css';
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
 import PropTypes from 'prop-types';
 Axios.defaults.withCredentials = true;
@@ -59,7 +60,7 @@ function Connexion(props) {
     }
 
     return (
-        <div>
+        <div className="inscription-container">
             <h1>Se connecter</h1>
             <form onSubmit={handleLogin}>
                 <label htmlFor="username">Nom d'utilisateur</label>
