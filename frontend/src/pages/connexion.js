@@ -32,7 +32,8 @@ function Connexion(props) {
                     setPassword(userData.password);
                     setMsgErreur("");
                     console.log("succes connexion")
-                    remonterState();     
+                    remonterState();   
+                    navigate("/calendrier");  
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                     console.log("Nom d'utilisateur ou mot de passe incorrect.")
@@ -53,11 +54,6 @@ function Connexion(props) {
     const remonterState = ()=>{
         props.functionRemonteLeUser(username);
         props.functionRemonteLePass(password);
-        
-        console.log("navigate")
-        navigate("/calendrier");
-        //window.location.reload();
-
     }
 
     return (
