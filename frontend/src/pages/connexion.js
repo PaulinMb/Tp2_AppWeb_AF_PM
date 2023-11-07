@@ -23,7 +23,7 @@ function Connexion(props) {
             password: password
         }
 
-        Axios.post('https://cute-gold-horse-suit.cyclic.app/api/connexion', userData)
+        Axios.post('/api/connexion', userData)
             .then(response => {
                 if (response.data.token!==undefined) {
                     //set le token associé à cette session 
