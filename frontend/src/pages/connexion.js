@@ -55,7 +55,7 @@ function Connexion(props) {
         props.functionRemonteLePass(password);
         
         navigate("/calendrier");
-        window.location.reload();
+        //window.location.reload();
 
     }
 
