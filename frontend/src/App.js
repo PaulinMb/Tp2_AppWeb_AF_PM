@@ -19,6 +19,7 @@ function App() {
         console.log("token : "+localStorage.getItem("token"))
         if (token) {
           // envoi le token pour autentifié user
+          console.log(token)
           authenticateUserWithToken();
         }
       }, []);
