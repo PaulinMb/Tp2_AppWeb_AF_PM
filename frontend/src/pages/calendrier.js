@@ -27,13 +27,13 @@ const Calendrier = () => {
             Axios.post("http://localhost:5000/api/createEvent",event).then(response=>{
             if(response.data.message!==undefined){
                 setMessageErreur(response.data.message);
+                getEvents();
             }
         }).catch(error => {
                 if(error){
                     setMessageErreur(error)
                 }
         });
-        window.location.reload();
         }
         else{
             setMessageErreur("Les champs doivent être remplis")
@@ -48,10 +48,11 @@ const Calendrier = () => {
         }
         Axios.delete("http://localhost:5000/api/deleteEvent",{params:paramsB}).then(response=>{
             setMessageErreur2(response.data.message)
+            getEvents();
         }).catch(error=>{
             setMessageErreur2(error)
         })
-        window.location.reload();
+        
     }
 
     const getEvents = () =>{
@@ -89,18 +90,18 @@ const Calendrier = () => {
 }
 
 Calendrier.propTypes = {
-    messageErreur: PropTypes.string.isRequired,
-    messageErreur2: PropTypes.string.isRequired,
-    newEventDate: PropTypes.string.isRequired,
-    newEventTitre: PropTypes.string.isRequired,
+    messageErreur: PropTypes.string,
+    messageErreur2: PropTypes.string,
+    newEventDate: PropTypes.string,
+    newEventTitre: PropTypes.string,
     eventsTable: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        date: PropTypes.string,
       })
-    ).isRequired,
-    setNewEventDate: PropTypes.func.isRequired,
-    setNewEventTitre: PropTypes.func.isRequired,
+    ),
+    setNewEventDate: PropTypes.func,
+    setNewEventTitre: PropTypes.func,
   };
   
 

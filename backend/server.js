@@ -109,13 +109,6 @@ app.get("/", (req, res) => {
     res.sendFile(pathAccueil);
 });
 
-
-app.get("/api/inscription", (req, res) => {
-    // Affiche la page d'inscription
-    const messageBienvenue = "<h1>Nouvelle utilisateur</h1>";
-    res.send(messageBienvenue);
-    res.sendFile(pathInscription);
-});
 app.post("/api/inscription", (req, res) => {
     const { username, password } = req.body;
 
@@ -146,6 +139,7 @@ app.post("/api/inscription", (req, res) => {
                         return res.redirect("/inscription");
                     } else {
                         console.error("Reussi");
+                        res.sendStatus(200).end();
                     }
                 });
             }

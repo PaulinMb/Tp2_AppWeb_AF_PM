@@ -7,6 +7,7 @@ Axios.defaults.withCredentials = true;
 function Inscription() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [message,setMessage] = useState('');
 
     const handleInscription = (event) => {
         event.preventDefault();
@@ -18,11 +19,19 @@ function Inscription() {
 
         Axios.post('http://localhost:5000/api/inscription', userData)
             .then(response => {
-                setUsername(userData.username);
-                setPassword(userData.password);
-                console.log("succes inscription")
+                console.log(response.status)
+                if(response.status===200){
+                    console.log("succes inscription");
+                    setMessage("Succes inscription");
+                    setPassword("");
+                    setUsername("");
+                }else{
+                    console.log("Erreur inscription");
+                    setMessage("Erreur inscription");   
+                }
             })
             .catch(error => {
+                setMessage("Une erreur s'est produite lors de l'inscription.");
                 console.error("Une erreur s'est produite lors de l'inscription.", error);
             });
     };
@@ -53,6 +62,7 @@ function Inscription() {
                 <br />
                 <button type="submit">S'inscrire</button>
             </form>
+            {message}
         </div>
     );
 }
