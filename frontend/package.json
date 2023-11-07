@@ -1,7 +1,6 @@
 {
   "name": "app",
   "version": "0.1.0",
-  "proxy":"https://tp2-app-web-af-pm.vercel.app",
   "private": true,
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.9",

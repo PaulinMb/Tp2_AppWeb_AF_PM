@@ -23,7 +23,7 @@ function Connexion(props) {
             password: password
         }
 
-        Axios.post('https://cute-gold-horse-suit.cyclic.app/api/connexion', userData)
+        Axios.post('http://localhost:5000/api/connexion', userData)
             .then(response => {
                 if (response.data.token!==undefined) {
                     //set le token associé à cette session 
@@ -34,6 +34,7 @@ function Connexion(props) {
                     console.log("succes connexion")
                     remonterState();   
                     navigate("/calendrier");  
+                    window.location.reload();
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");
                     console.log("Nom d'utilisateur ou mot de passe incorrect.")

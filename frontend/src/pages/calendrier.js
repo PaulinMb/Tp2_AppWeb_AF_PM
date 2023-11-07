@@ -24,7 +24,7 @@ const Calendrier = () => {
             date : newEventDate
         }
         if(newEventTitre!==''&&newEventDate!==''){
-            Axios.post("https://cute-gold-horse-suit.cyclic.app/api/createEvent",event).then(response=>{
+            Axios.post("http://cute-gold-horse-suit.cyclic.app/api/createEvent",event).then(response=>{
             if(response.data.message!==undefined){
                 setMessageErreur(response.data.message);
                 getEvents();
@@ -46,7 +46,7 @@ const Calendrier = () => {
             title : titleEv,
             date : dateEv
         }
-        Axios.delete("/api/deleteEvent",{params:paramsB}).then(response=>{
+        Axios.delete("http://cute-gold-horse-suit.cyclic.app/api/deleteEvent",{params:paramsB}).then(response=>{
             setMessageErreur2(response.data.message)
             getEvents();
         }).catch(error=>{
@@ -56,7 +56,7 @@ const Calendrier = () => {
     }
 
     const getEvents = () =>{
-        Axios.get("/api/getEvents").then(response=>{
+        Axios.get("http://cute-gold-horse-suit.cyclic.app/api/getEvents").then(response=>{
             console.log(response.data.array)
             setEventsTable(response.data.array);
         }).catch(error=>{
