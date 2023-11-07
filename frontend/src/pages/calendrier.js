@@ -24,7 +24,7 @@ const Calendrier = () => {
             date : newEventDate
         }
         if(newEventTitre!==''&&newEventDate!==''){
-            Axios.post("http://localhost:5000/api/createEvent",event).then(response=>{
+            Axios.post("/api/createEvent",event).then(response=>{
             if(response.data.message!==undefined){
                 setMessageErreur(response.data.message);
                 getEvents();
@@ -46,7 +46,7 @@ const Calendrier = () => {
             title : titleEv,
             date : dateEv
         }
-        Axios.delete("http://localhost:5000/api/deleteEvent",{params:paramsB}).then(response=>{
+        Axios.delete("/api/deleteEvent",{params:paramsB}).then(response=>{
             setMessageErreur2(response.data.message)
             getEvents();
         }).catch(error=>{
@@ -56,7 +56,7 @@ const Calendrier = () => {
     }
 
     const getEvents = () =>{
-        Axios.get("http://localhost:5000/api/getEvents").then(response=>{
+        Axios.get("/api/getEvents").then(response=>{
             console.log(response.data.array)
             setEventsTable(response.data.array);
         }).catch(error=>{

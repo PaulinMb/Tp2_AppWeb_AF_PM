@@ -1,0 +1,2 @@
+local =   "proxy":"http://localhost:5000",
+déployé = "proxy":"https://cute-gold-horse-suit.cyclic.app",

@@ -27,6 +27,13 @@ app.use(
   })
 );
 
+// gestion de session
+app.use(session({
+    secret: 'Z5X34PJszv',
+    resave: false,
+    saveUninitialized: true
+}));
+
 //connection
 //pool de connection permet d'avoir plusieurs connections et les réutiliser
 var connPool = mysql.createPool({
@@ -94,13 +101,6 @@ function generateToken(length) {
 }
 
 //API'S--------------------------------------
-
-// gestion de session
-app.use(session({
-    secret: 'Z5X34PJszv',
-    resave: false,
-    saveUninitialized: true
-}));
 
 // Accueil
 app.get("/", (req, res) => {
@@ -201,8 +201,6 @@ app.get("/api/getToken",(req,res)=>{
     else{
         res.send({"isConnected":false}).end();
     }
-
-
 })
 
 
@@ -231,23 +229,26 @@ app.post("/api/createEvent",(req,res)=>{
         connPool.query(insertQuery, [titre,date,idUser], (err, result) => {
             if (err) {
                 console.error("Erreur lors de l'insertion de l'event calendrier", err);
-                res.send({"message":"Erreur lors de l'insertion de l'event calendrier en db"}).end();
+                res.status(200).send({"message":"Erreur lors de l'insertion de l'event calendrier en db"}).end();
             } else {
                 console.error("Event insert réussi");
-                res.send({"message":"Evenement créé avec succes"}).end();
+                res.status(200).send({"message":"Evenement créé avec succes"}).end();
             }
         })
+    }else{
+        res.status(400).send({"message":"Erreur not connected"}).end();
     }    
 })
 
 //effacer l'évenement entrer par l'utilisateur
 app.delete("/api/deleteEvent",(req,res)=>{
-        console.log(req.query.title);
-        let title = req.query.title;
-        let date = req.query.date;
+    console.log(req.query.title);
+    let title = req.query.title;
+    let date = req.query.date;
 
-        let deleteQuery = "delete from defaultdb.CalendrierEvents where titre_event = ? and date_event = ?";
-        connPool.query(deleteQuery,[title,date],(err,result)=>{
+    let deleteQuery = "delete from defaultdb.CalendrierEvents where titre_event = ? and date_event = ? and fk_id_user = ?";
+    if (req.session.user_id!==undefined && req.session.token !== undefined) {
+        connPool.query(deleteQuery,[title,date,req.session.user_id],(err,result)=>{
             if (err) {
                 console.error("Erreur lors du delete de l'event", err);
                 res.send({"message":"Erreur lors du delete de l'event"}).end();
@@ -256,6 +257,9 @@ app.delete("/api/deleteEvent",(req,res)=>{
                 res.send({"message":"Evenement delete avec succes"}).end();
             }
         })
+    }else{
+        res.status(400).send({"message":"Erreur not connected"}).end();
+    }
 
 });
 
@@ -284,8 +288,8 @@ app.get("/api/getEvents", (req, res) => {
             }
         })
     } else {
-        console.log("Peut pas créer d'event parce que il n'y a pas de session associé à l'appeleur")
-        res.send("").end();
+        console.log("Peut retourner d'event parce que il n'y a pas de session associé à l'appeleur")
+        res.status(400).send("").end();
     }
 });
 

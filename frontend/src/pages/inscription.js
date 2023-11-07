@@ -17,7 +17,7 @@ function Inscription() {
             password: password
         }
 
-        Axios.post('http://localhost:5000/api/inscription', userData)
+        Axios.post('api/inscription', userData)
             .then(response => {
                 console.log(response.status)
                 if(response.status===200){

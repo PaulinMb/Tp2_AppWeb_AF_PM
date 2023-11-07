@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
+  "proxy": "https://cute-gold-horse-suit.cyclic.app",
   "private": true,
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.9",

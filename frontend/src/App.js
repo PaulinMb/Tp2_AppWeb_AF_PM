@@ -28,7 +28,7 @@ function App() {
         const params  = {
             token : tokenString
         }
-        Axios.get("http://localhost:5000/api/getToken",{ params: params }).then(response => {
+        Axios.get("/api/getToken",{ params: params }).then(response => {
             //console.log(response.data);
             setConnected(response.data.isConnected)
         }).catch(err=>{

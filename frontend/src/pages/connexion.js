@@ -23,7 +23,7 @@ function Connexion(props) {
             password: password
         }
 
-        Axios.post('http://localhost:5000/api/connexion', userData)
+        Axios.post('https://cute-gold-horse-suit.cyclic.app/api/connexion', userData)
             .then(response => {
                 if (response.data.token!==undefined) {
                     //set le token associé à cette session 
@@ -46,8 +46,7 @@ function Connexion(props) {
                 }
                 else{
                     console.log("Une erreur s'est produite lors de la connexion. Veuillez réessayer plus tard.");
-                }
-                
+                }    
             });
     };
 
@@ -56,7 +55,8 @@ function Connexion(props) {
         props.functionRemonteLePass(password);
         
         navigate("/calendrier");
-        window.location.reload()
+        window.location.reload();
+
     }
 
     return (
@@ -87,13 +87,11 @@ function Connexion(props) {
             {msgErreur}
         </div>
     );
-    //<button onClick={handleLogin}>api call</button>  
-
 }
 
 Connexion.propTypes = {
-    functionRemonteLeUser: PropTypes.func.isRequired,
-    functionRemonteLePass: PropTypes.func.isRequired,
+    functionRemonteLeUser: PropTypes.func,
+    functionRemonteLePass: PropTypes.func,
   };
 
 export default Connexion;
