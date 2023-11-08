@@ -20,12 +20,14 @@ function App() {
         if (token) {
           // envoi le token pour autentifié user
           console.log(token)
+          console.log(isConnected)
           authenticateUserWithToken();
         }
       }, []);
 
     const authenticateUserWithToken = () => {
         let tokenString = localStorage.getItem("token");
+        console.log("dick")
         const params  = {
             token : tokenString
         }
@@ -107,8 +109,8 @@ function App() {
                 <Routes>
                     <Route exact path="/" element={<Accueil/>}/>
                     <Route exact path="/inscription" element={<Inscription/>}/>
-                    <Route exact path="/connexion" element={!isConnected ? <Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} />:null}/>
-                    <Route exact path="/calendrier" element={ isConnected ? <Calendrier />:<Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} />}/>
+                    <Route exact path="/connexion" element={!isConnected ? <Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} funcAut={authenticateUserWithToken} />:null}/>
+                    <Route exact path="/calendrier" element={ isConnected ? <Calendrier />:<Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} funcAut={authenticateUserWithToken}/>}/>
                 </Routes>
             </BrowserRouter>
         </div>

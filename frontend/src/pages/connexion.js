@@ -34,6 +34,7 @@ function Connexion(props) {
                     console.log("succes connexion")
                     remonterState();   
                     navigate("/calendrier");  
+                    props.funcAut()
                     //window.location.reload();
                 } else {
                     setMsgErreur("Nom d'utilisateur ou mot de passe incorrect.");

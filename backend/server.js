@@ -199,11 +199,11 @@ app.get("/api/getToken",(req,res)=>{
             res.send({"isConnected":true}).end();
         }
         else{
-            res.send({"isConnected":false}).end();
+            res.send({"isConnected":false,"servertoken":req.session.token,"tokenClient":req.query.token}).end();
         }
     }
     else{
-        res.send({"isConnected":false}).end();
+        res.send({"isConnected":false,"servertoken":req.session.token,"tokenClient":req.query.token}).end();
     }
 })
 
