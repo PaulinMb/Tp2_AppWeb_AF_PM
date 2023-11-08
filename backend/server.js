@@ -25,7 +25,7 @@ const pathAccueil = path.join(__dirname,'..','App.js');
     //credentials: true,
 app.use(
   cors({
-    origin: ['https://tp2-app-web-af-pm.vercel.app',"http://localhost:3000","http://localhost:3001"],
+    origin: "https://tp2-app-web-af-pm.vercel.app",
     methods: 'GET,POST,PUT,DELETE', 
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
@@ -35,9 +35,8 @@ app.use(
 // gestion de session
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    secret: "thisismysecrctekek34321",
     saveUninitialized:true,
-    cookie: { maxAge: oneDay },
     resave: false 
 }));
 
