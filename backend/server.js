@@ -24,7 +24,7 @@ const pathAccueil = path.join(__dirname,'..','App.js');
     //credentials: true,
 app.use(
   cors({
-    origin: 'https://tp2-app-web-af-pm.vercel.app',
+    origin: ['https://tp2-app-web-af-pm.vercel.app',"http://localhost:3000","http://localhost:3001"],
     methods: 'GET,POST,PUT,DELETE', 
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
