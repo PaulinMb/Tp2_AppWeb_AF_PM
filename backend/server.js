@@ -19,11 +19,14 @@ const pathAccueil = path.join(__dirname,'..','App.js');
 
 
 //pour allow la request origin port 3000 à 3002
+//origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://tp2-app-web-af-pm.vercel.app","http://tp2-app-web-af-pm.vercel.app","http://tp2-app-web-af-pm.vercel.app/connexion","http://tp2-app-web-af-pm.vercel.app/inscription","http://tp2-app-web-af-pm.vercel.app/","http://tp2-app-web-af-pm.vercel.app/calendrier"],
+   // methods: ["GET", "POST","DELETE","PUT"],
+    //credentials: true,
 app.use(
   cors({
-    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://tp2-app-web-af-pm.vercel.app","http://tp2-app-web-af-pm.vercel.app","http://tp2-app-web-af-pm.vercel.app/connexion","http://tp2-app-web-af-pm.vercel.app/inscription","http://tp2-app-web-af-pm.vercel.app/","http://tp2-app-web-af-pm.vercel.app/calendrier"],
-    methods: ["GET", "POST","DELETE","PUT"],
-    credentials: true,
+    origin: 'https://tp2-app-web-af-pm.vercel.app',
+    methods: 'GET,POST,PUT,DELETE', 
+    allowedHeaders: 'Content-Type,Authorization',
   })
 );
 
