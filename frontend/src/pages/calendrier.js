@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 Axios.defaults.withCredentials = true;
 
 
-const Calendrier = () => {
+const Calendrier = (props) => {
 
     const [messageErreur,setMessageErreur] = useState('');
     const [messageErreur2,setMessageErreur2] = useState('');
@@ -24,7 +24,7 @@ const Calendrier = () => {
             date : newEventDate
         }
         if(newEventTitre!==''&&newEventDate!==''){
-            Axios.post("https://cute-gold-horse-suit.cyclic.app/api/createEvent",event).then(response=>{
+            Axios.post(props.url+"/api/createEvent",event).then(response=>{
             if(response.data.message!==undefined){
                 setMessageErreur(response.data.message);
                 getEvents();
@@ -41,12 +41,12 @@ const Calendrier = () => {
     }
 
     const deleteEvent = (titleEv,dateEv)=>{
-        console.log("delete")
+        //console.log("delete")
         let paramsB = {
             title : titleEv,
             date : dateEv
         }
-        Axios.delete("https://cute-gold-horse-suit.cyclic.app/api/deleteEvent",{params:paramsB}).then(response=>{
+        Axios.delete(props.url+"/api/deleteEvent",{params:paramsB}).then(response=>{
             setMessageErreur2(response.data.message)
             getEvents();
         }).catch(error=>{
@@ -56,8 +56,8 @@ const Calendrier = () => {
     }
 
     const getEvents = () =>{
-        Axios.get("https://cute-gold-horse-suit.cyclic.app/api/getEvents").then(response=>{
-            console.log(response.data.array)
+        Axios.get(props.url+"/api/getEvents").then(response=>{
+           // console.log(response.data.array)
             setEventsTable(response.data.array);
         }).catch(error=>{
 

@@ -25,16 +25,16 @@ const pathAccueil = path.join(__dirname,'..','App.js');
     //credentials: true,
 app.use(
   cors({
-    origin: "https://tp2-app-web-af-pm.vercel.app",
+    origin: ["http://localhost:3000","http://localhost:3001","http://localhost:3002","https://tp2-app-web-af-pm.vercel.app"],
     methods: 'GET,POST,PUT,DELETE', 
-    allowedHeaders: 'Content-Type,Authorization',
+    //allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
   })
 );
 
 // gestion de session
 const oneDay = 1000 * 60 * 60 * 24;
-app.use(sessions({
+app.use(session({
     secret: "thisismysecrctekek34321",
     saveUninitialized:true,
     resave: false 
@@ -199,7 +199,9 @@ app.get("/api/getToken",(req,res)=>{
             res.send({"isConnected":true}).end();
         }
         else{
-            res.send({"isConnected":false,"servertoken":req.session.token,"tokenClient":req.query.token}).end();
+            console.log(req.sessionStore)
+            console.log(req.sessionID)
+            res.send({"isConnected":false}).end();
         }
     }
     else{
@@ -287,7 +289,7 @@ app.get("/api/getEvents", (req, res) => {
 
                 dataArray.push({title: 'Début du TP1', date: '2023-10-13'});
                 dataArray.push({title: 'Fin du TP1', date: '2023-11-10'});
-                console.log(dataArray)
+                //console.log(dataArray)
                 res.send({"array":dataArray}).end();
             }
         })

@@ -4,7 +4,7 @@ import Axios from "axios";
 Axios.defaults.withCredentials = true;
 
 
-function Inscription() {
+function Inscription(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message,setMessage] = useState('');
@@ -17,7 +17,7 @@ function Inscription() {
             password: password
         }
 
-        Axios.post('https://cute-gold-horse-suit.cyclic.app/api/inscription', userData)
+        Axios.post(props.url+'/api/inscription', userData)
             .then(response => {
                 console.log(response.status)
                 if(response.status===200){

@@ -12,6 +12,7 @@ function App() {
     let [username,setUsername] = useState('')
     const [password, setPassword] = useState('');
     const [isConnected,setConnected] = useState(false)
+    const [url , setUrl] = useState("http://localhost:5000"); //cute-gold-horse-suit.cyclic.app
 
     //lancer à chaque render pour valider le token du user (called whenever the component re-renders due to a change in state or props.)
     useEffect(() => {
@@ -27,11 +28,10 @@ function App() {
 
     const authenticateUserWithToken = () => {
         let tokenString = localStorage.getItem("token");
-        console.log("dick")
         const params  = {
             token : tokenString
         }
-        Axios.get("https://cute-gold-horse-suit.cyclic.app/api/getToken",{ params: params }).then(response => {
+        Axios.get(url+"/api/getToken",{ params: params }).then(response => {
             //console.log(response.data);
             setConnected(response.data.isConnected)
         }).catch(err=>{
@@ -45,7 +45,7 @@ function App() {
         setConnected(false)
         //setUser(null);
         window.location.reload()
-        Axios.get('https://cute-gold-horse-suit.cyclic.app//deconnexion') 
+        Axios.get(url+'/deconnexion') 
         .then(response => {
         console.log('Logged out successfully');
       });
@@ -108,9 +108,9 @@ function App() {
                 </div>
                 <Routes>
                     <Route exact path="/" element={<Accueil/>}/>
-                    <Route exact path="/inscription" element={<Inscription/>}/>
-                    <Route exact path="/connexion" element={!isConnected ? <Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} funcAut={authenticateUserWithToken} />:null}/>
-                    <Route exact path="/calendrier" element={ isConnected ? <Calendrier />:<Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} funcAut={authenticateUserWithToken}/>}/>
+                    <Route exact path="/inscription" element={<Inscription url={url}/>}/>
+                    <Route exact path="/connexion" element={!isConnected ? <Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} funcAut={authenticateUserWithToken} url={url}/>:null}/>
+                    <Route exact path="/calendrier" element={ isConnected ? <Calendrier url={url} />:<Connexion functionRemonteLeUser={setUsername} functionRemonteLePass={setPassword} funcAut={authenticateUserWithToken} url={url}/>}/>
                 </Routes>
             </BrowserRouter>
         </div>
