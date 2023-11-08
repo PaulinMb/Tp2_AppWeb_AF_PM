@@ -165,11 +165,9 @@ app.post("/api/connexion",(req,res)=>{
             console.error("connection succes");
 
             //set le token associé à cette connexion
-            let token = req.session.token;
-            if(token==undefined){
-                token = generateToken(10);
-                req.session.token = token;
-            }
+            let token = generateToken(10);
+            req.session.token = token;
+            
 
             //temps alloué à la session
             req.session.cookie.originalMaxAge = 999999;
@@ -203,7 +201,7 @@ app.get("/api/getToken",(req,res)=>{
         }
     }
     else{
-        res.send({"isConnected":false,"servertoken":req.session.token,"tokenClient":req.query.token}).end();
+        res.send({"isConnected":false,"servertoken":req.session.token,"tokenClient":req.query.token,"obj":req.sessionID,"sessionid":req.sessionID,"store":req.sessionStore}).end();
     }
 })
 
