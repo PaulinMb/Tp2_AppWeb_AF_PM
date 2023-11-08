@@ -12,7 +12,12 @@ function App() {
     let [username,setUsername] = useState('')
     const [password, setPassword] = useState('');
     const [isConnected,setConnected] = useState(false)
-    const [url , setUrl] = useState("http://localhost:5000"); //cute-gold-horse-suit.cyclic.app
+
+    //pour utiliser en local
+    //const [url , setUrl] = useState("http://localhost:5000");
+
+    //pour utiliser déployé
+    const [url , setUrl] = useState("https://cute-gold-horse-suit.cyclic.app");
 
     //lancer à chaque render pour valider le token du user (called whenever the component re-renders due to a change in state or props.)
     useEffect(() => {
