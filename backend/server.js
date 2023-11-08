@@ -27,6 +27,7 @@ app.use(
     origin: 'https://tp2-app-web-af-pm.vercel.app',
     methods: 'GET,POST,PUT,DELETE', 
     allowedHeaders: 'Content-Type,Authorization',
+    credentials: true,
   })
 );
 
