@@ -4,6 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+app.use(cookieParser());
+
 var mysql = require('mysql');
 
 const bcrypt = require('bcrypt');
@@ -32,10 +34,12 @@ app.use(
 );
 
 // gestion de session
-app.use(session({
-    secret: 'Z5X34PJszv',
-    resave: false,
-    saveUninitialized: true
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(sessions({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false 
 }));
 
 //connection
