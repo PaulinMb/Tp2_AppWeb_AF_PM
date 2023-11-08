@@ -29,7 +29,7 @@ function App() {
         const params  = {
             token : tokenString
         }
-        Axios.get("http://cute-gold-horse-suit.cyclic.app/api/getToken",{ params: params }).then(response => {
+        Axios.get("https://cute-gold-horse-suit.cyclic.app/api/getToken",{ params: params }).then(response => {
             //console.log(response.data);
             setConnected(response.data.isConnected)
         }).catch(err=>{
@@ -43,7 +43,7 @@ function App() {
         setConnected(false)
         //setUser(null);
         window.location.reload()
-        Axios.get('http://cute-gold-horse-suit.cyclic.app//deconnexion') 
+        Axios.get('https://cute-gold-horse-suit.cyclic.app//deconnexion') 
         .then(response => {
         console.log('Logged out successfully');
       });
