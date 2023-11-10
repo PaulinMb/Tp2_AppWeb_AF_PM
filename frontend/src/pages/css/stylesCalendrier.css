@@ -1,0 +1,80 @@
+/* création d'événements */
+.create-event-section {
+    width: fit-content;
+}
+
+.create-event-section h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.create-event-section label {
+    font-weight: bold;
+    color: #4a4a4a;
+    display: block;
+    margin-top: 10px;
+}
+
+.create-event-section input[type="text"],
+.create-event-section input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 2px solid #4a90e2;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 14px;
+}
+
+.create-event-section button {
+    background: linear-gradient(to bottom, #4a90e2, #357dc3);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.create-event-section button:hover {
+    background: linear-gradient(to bottom, #357dc3, #4a90e2);
+}
+
+/* suppression d'événements */
+.delete-event-section {
+    width: fit-content;
+}
+
+.delete-event-section h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.delete-event-section label {
+    margin-top: 10px;
+}
+
+.delete-event-section button {
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 5px;
+}
+
+.delete-event-section button:hover {
+    background: linear-gradient(to bottom, #c0392b, #e74c3c);
+}
+
+/* FullCalendar */
+.full-calendar-container {
+    margin-top: 20px;
+}

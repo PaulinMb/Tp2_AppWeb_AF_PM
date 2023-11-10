@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react';
+import './css/stylesCalendrier.css';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid';
 import Axios from 'axios'; //npm install axios au tout premier dossier parent Tp2_App...M
@@ -65,27 +66,33 @@ const Calendrier = (props) => {
     }
 
     return (<div>
-        <div style={{border:"1px solid black",width:"fit-content",padding:"15px",marginTop:"5px"}}>
+        <div className="create-event-section">
             <h1>Create event</h1>
             <label>Titre : </label>
             <input type='text' className='custom' value={newEventTitre} name='titre' onChange={(e)=>setNewEventTitre(e.target.value)}></input>
             <label>Date : </label>
             <input type='date'  className='custom' value={newEventDate} name='date' onChange={(e)=>setNewEventDate(e.target.value)}></input>
-            <button onClick={createEvent}  className='custom'>Create Event</button>
+            <button onClick={createEvent}  className='custom'>Create</button>
             {messageErreur}
         </div>
-        <div style={{border:"1px solid black",width:"fit-content",padding:"15px",marginTop:"5px"}}>
-            <h1>Delete events</h1>
+
+        <div className="delete-event-section">
+            <br/><h1>Delete events</h1>
             {eventsTable.map((ev,index)=>{
-                return(< div key={index}><label>{ev.title}   -  </label><label>{ev.date}   </label><button onClick={()=>deleteEvent(ev.title,ev.date)}>Delete</button></div>)
+                return(< div
+                    key={index}><br/><label>{ev.title} - </label><label>{ev.date}</label><br/>
+                    <button onClick={()=>deleteEvent(ev.title,ev.date)}>Delete</button>
+                </div>)
             })}
             {messageErreur2}
         </div>
+        <div className="full-calendar-container">
         <FullCalendar
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
             events={eventsTable}
         />
+        </div>
     </div>);
 }
 
